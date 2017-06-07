@@ -19,18 +19,6 @@ int main(int argc, char *argv[])
 	struct ifreq ifr;
 	char ifname[IFNAMSIZ];
 
-    /** campos do protocolo arp **/
-    short HwType[16];
-    short ProType[16];
-    short HLEN[8];
-    short PLEN[8];
-    short Operation[16];
-    short SenderHA[48];
-    short SenderIP[32];
-    short TargetHA[48];
-    short TargetIP[32];
-            
-
 	if (argc != 2) {
 		printf("Usage: %s iface\n", argv[0]);
 		return 1;
@@ -69,7 +57,17 @@ int main(int argc, char *argv[])
 		unsigned char mac_dst[6];
 		unsigned char mac_src[6];
 		short int ethertype;
-
+        /** campos do protocolo arp **/
+        short HwType;
+        short ProType;
+        short HLEN;
+        short PLEN;
+        short Operation;
+        //unsigned char SenderHA[6];
+        //unsigned char TargetHA[6];
+        unsigned char SenderIP[4];
+        short char TargetIP[4];
+            
 		/* Recebe pacotes */
 		if (recv(fd,(char *) &buffer, BUFFER_SIZE, 0) < 0) {
 			perror("recv");
