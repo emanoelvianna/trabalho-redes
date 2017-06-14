@@ -124,6 +124,7 @@ int main(int argc, char *argv[])
 			printf("MAC destino: %02x:%02x:%02x:%02x:%02x:%02x\n",
 				   pacote.target_ethernet_address[0],
 				   pacote.target_ethernet_address[1],
+				   pacote.target_ethernet_address[2],
 				   pacote.target_ethernet_address[3],
 				   pacote.target_ethernet_address[4],
 				   pacote.target_ethernet_address[5]);
@@ -148,13 +149,11 @@ int main(int argc, char *argv[])
 				   pacote.source_hardware_address[3],
 				   pacote.source_hardware_address[4],
 				   pacote.source_hardware_address[5]);
-			printf("Endereço logico origem:  %02x:%02x:%02x:%02x:%02x:%02x\n",
+			printf("Endereço logico origem:  %02x:%02x:%02x:%02x\n",
 				   pacote.source_protocol_address[0],
 				   pacote.source_protocol_address[1],
 				   pacote.source_protocol_address[2],
-				   pacote.source_protocol_address[3],
-				   pacote.source_protocol_address[4],
-				   pacote.source_protocol_address[5]);
+				   pacote.source_protocol_address[3]);
 			printf("Endereço fisico de destino: %02x:%02x:%02x:%02x:%02x:%02x\n",
 				   pacote.target_hardware_address[0],
 				   pacote.target_hardware_address[1],
@@ -162,13 +161,11 @@ int main(int argc, char *argv[])
 				   pacote.target_hardware_address[3],
 				   pacote.target_hardware_address[4],
 				   pacote.target_hardware_address[5]);
-			printf("Endereço logico destino:  %02x:%02x:%02x:%02x:%02x:%02x\n",
+			printf("Endereço logico destino:  %02x:%02x:%02x:%02x\n",
 				   pacote.target_protocol_address[0],
 				   pacote.target_protocol_address[1],
 				   pacote.target_protocol_address[2],
-				   pacote.target_protocol_address[3],
-				   pacote.target_protocol_address[4],
-				   pacote.target_protocol_address[5]);
+				   pacote.target_protocol_address[3]);
 			//printf("Dado arp: %02x\n", pacote.padding);	   	   	   
 			printf("\n ----------------------------------------- \n");
 			printf("\n");
