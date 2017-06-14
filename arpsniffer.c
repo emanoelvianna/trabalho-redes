@@ -1,3 +1,10 @@
+/**
+ * comando de compilação:
+ * gcc -o arpsniffer arpsniffer.c -Wall
+ * comando de execução:
+ * ./arpsniffer <interface_de_rede>
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -51,7 +58,7 @@ int main(int argc, char *argv[])
 
 	if (argc != 2)
 	{
-		printf("Usage: %s iface\n", argv[0]);
+		printf("Informe a interface de rede: %s iface\n", argv[0]);
 		return 1;
 	}
 	strcpy(ifname, argv[1]);
@@ -87,7 +94,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	printf("Esperando pacotes ... \n");
+	printf(" Esperando pacotes ... \n");
 	while (1)
 	{
 		struct estrutura_pacote_arp pacote;
@@ -184,7 +191,7 @@ int main(int argc, char *argv[])
 				   pacote.target_hardware_address[14],
 				   pacote.target_hardware_address[15],
 				   pacote.target_hardware_address[16],
-				   pacote.target_hardware_address[17]);   	   	   
+				   pacote.target_hardware_address[17]);
 			printf("\n ----------------------------------------- \n");
 			printf("\n");
 		}
