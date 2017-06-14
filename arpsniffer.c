@@ -166,7 +166,25 @@ int main(int argc, char *argv[])
 				   pacote.target_protocol_address[1],
 				   pacote.target_protocol_address[2],
 				   pacote.target_protocol_address[3]);
-			//printf("Dado arp: %02x\n", pacote.padding);	   	   	   
+			printf("Dados do pacote: %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
+				   pacote.target_hardware_address[0],
+				   pacote.target_hardware_address[1],
+				   pacote.target_hardware_address[2],
+				   pacote.target_hardware_address[3],
+				   pacote.target_hardware_address[4],
+				   pacote.target_hardware_address[5],
+				   pacote.target_hardware_address[6],
+				   pacote.target_hardware_address[7],
+				   pacote.target_hardware_address[8],
+				   pacote.target_hardware_address[9],
+				   pacote.target_hardware_address[10],
+				   pacote.target_hardware_address[11],
+				   pacote.target_hardware_address[12],
+				   pacote.target_hardware_address[13],
+				   pacote.target_hardware_address[14],
+				   pacote.target_hardware_address[15],
+				   pacote.target_hardware_address[16],
+				   pacote.target_hardware_address[17]);   	   	   
 			printf("\n ----------------------------------------- \n");
 			printf("\n");
 		}
