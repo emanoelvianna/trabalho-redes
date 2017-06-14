@@ -154,6 +154,10 @@ void *receiveReplies()
 		memset(&sa, 0x00, sizeof(sa));
 		memset(&pacote, 0x00, sizeof(pacote));
 		n = sizeof(sa);
+		
+		/** recebendo os endereços no buffer **/
+		/* &pacote -> Ponteiro para o buffer que receberah as mensagens. */
+		/* &sa -> Ponteiro refere-se ao endereco de origem da mensagem que sera recebida */
 		if (recvfrom(s, &pacote, sizeof(pacote), 0, (struct sockaddr *)&sa, &n) < 0)
 		{
 			perror("ERROR ao receber o pacote");

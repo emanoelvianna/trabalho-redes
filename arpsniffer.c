@@ -123,7 +123,6 @@ int main(int argc, char *argv[])
 		memcpy(&pacote.target_hardware_address, buffer + ETHERNET_ADDR_LEN + ETHERNET_ADDR_LEN + sizeof(pacote.ethernet_type) + sizeof(pacote.hardware_type) + sizeof(pacote.protocol_type) + sizeof(pacote.hardware_address_length) + sizeof(pacote.protocol_address_length) + sizeof(pacote.arp_options) + sizeof(pacote.source_hardware_address) + sizeof(pacote.source_protocol_address), sizeof(pacote.target_hardware_address));
 		memcpy(&pacote.target_protocol_address, buffer + ETHERNET_ADDR_LEN + ETHERNET_ADDR_LEN + sizeof(pacote.ethernet_type) + sizeof(pacote.hardware_type) + sizeof(pacote.protocol_type) + sizeof(pacote.hardware_address_length) + sizeof(pacote.protocol_address_length) + sizeof(pacote.arp_options) + sizeof(pacote.source_hardware_address) + sizeof(pacote.source_protocol_address) + sizeof(pacote.target_hardware_address), sizeof(pacote.target_protocol_address));
 
-		//TODO: rever maneira que está sendo impresso os resultados
 		if (pacote.ethernet_type == ETHERTYPE)
 		{
 			printf("\n ----------------------------------------- \n");
