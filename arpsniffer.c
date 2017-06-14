@@ -25,13 +25,13 @@ struct estrutura_pacote_arp
 	unsigned short ethernet_type;							  // tipo_protocolo_ethernet
 
 	/* Cabeçalho ARP */
-	unsigned short hardware_type; // tipo_hardware
-	unsigned short protocol_type; // tipo_protocolo
+	unsigned short int hardware_type; // tipo_hardware
+	unsigned short int protocol_type; // tipo_protocolo
 
 	unsigned char hardware_address_length; // comprimento_endereco_mac
 	unsigned char protocol_address_length; // comprimento_endereco_logico
 
-	unsigned short arp_options; // tipo_da_operacao
+	unsigned short int arp_options; // tipo_da_operacao
 
 	unsigned char source_hardware_address[ETHERNET_ADDR_LEN]; // endereco_fisico_origem
 	unsigned char source_protocol_address[IP_ADDR_LEN];		  // endereco_logico_origem
@@ -137,11 +137,11 @@ int main(int argc, char *argv[])
 				   pacote.source_ethernet_address[5]);
 			printf("Tipo do protocolo ethernet: 0x%04x\n", pacote.ethernet_type);
 			printf("\n -- Pacote ARP -- \n");
-			printf("Tipo de hardware: 0x%04x\n", pacote.hardware_type);
-			printf("Tipo de protocolo: 0x%04x\n", pacote.protocol_type);
+			printf("Tipo de hardware: %04x\n", ntohs(pacote.hardware_type));
+			printf("Tipo de protocolo: %04x\n", ntohs(pacote.protocol_type));
 			printf("Comprimento do endereço arp: %02x\n", pacote.hardware_address_length);
 			printf("Comprimento do protocolo arp: %02x\n", pacote.protocol_address_length);
-			printf("Tipo da operação: 0x%04x\n", pacote.arp_options);
+			printf("Tipo da operação: %04x\n", ntohs(pacote.arp_options));
 			printf("Endereço fisico de origem:  %02x:%02x:%02x:%02x:%02x:%02x\n",
 				   pacote.source_hardware_address[0],
 				   pacote.source_hardware_address[1],
@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
 				   pacote.source_hardware_address[3],
 				   pacote.source_hardware_address[4],
 				   pacote.source_hardware_address[5]);
-			printf("Endereço logico origem:  %02x:%02x:%02x:%02x\n",
+			printf("Endereço logico origem:  %d.%d.%d.%d\n",
 				   pacote.source_protocol_address[0],
 				   pacote.source_protocol_address[1],
 				   pacote.source_protocol_address[2],
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
 				   pacote.target_hardware_address[3],
 				   pacote.target_hardware_address[4],
 				   pacote.target_hardware_address[5]);
-			printf("Endereço logico destino:  %02x:%02x:%02x:%02x\n",
+			printf("Endereço logico destino:  %d.%d.%d.%d\n",
 				   pacote.target_protocol_address[0],
 				   pacote.target_protocol_address[1],
 				   pacote.target_protocol_address[2],
