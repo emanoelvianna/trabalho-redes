@@ -20,9 +20,9 @@ struct estrutura_pacote_arp
 {
 
 	/* Cabeçalho Ethernet */
-	unsigned char source_ethernet_address[ETHERNET_ADDR_LEN]; //
-	unsigned char target_ethernet_address[ETHERNET_ADDR_LEN]; //
-	unsigned short ethernet_type;							  //
+	unsigned char source_ethernet_address[ETHERNET_ADDR_LEN]; // endereco_fisico
+	unsigned char target_ethernet_address[ETHERNET_ADDR_LEN]; // endereco_logico
+	unsigned short ethernet_type;							  // tipo_protocolo_ethernet
 
 	/* Cabeçalho ARP */
 	unsigned short hardware_type; // tipo_hardware
@@ -119,6 +119,7 @@ int main(int argc, char *argv[])
 		//TODO: rever maneira que está sendo impresso os resultados
 		if (pacote.ethernet_type == ETHERTYPE)
 		{
+			printf("\n ----------------------------------------- \n");
 			printf("\n -- Cabecalho Ethernet -- \n");
 			printf("MAC destino: %02x:%02x:%02x:%02x:%02x:%02x\n",
 				   pacote.target_ethernet_address[0],
@@ -133,9 +134,43 @@ int main(int argc, char *argv[])
 				   pacote.source_ethernet_address[3],
 				   pacote.source_ethernet_address[4],
 				   pacote.source_ethernet_address[5]);
-			printf("EtherType: 0x%04x\n", pacote.ethernet_type);
+			printf("Tipo do protocolo ethernet: 0x%04x\n", pacote.ethernet_type);
 			printf("\n -- Pacote ARP -- \n");
-			printf("Tipo hardware: 0x%04x\n", pacote.hardware_type);
+			printf("Tipo de hardware: 0x%04x\n", pacote.hardware_type);
+			printf("Tipo de protocolo: 0x%04x\n", pacote.protocol_type);
+			printf("Comprimento do endereço arp: %02x\n", pacote.hardware_address_length);
+			printf("Comprimento do protocolo arp: %02x\n", pacote.protocol_address_length);
+			printf("Tipo da operação: 0x%04x\n", pacote.arp_options);
+			printf("Endereço fisico de origem:  %02x:%02x:%02x:%02x:%02x:%02x\n",
+				   pacote.source_hardware_address[0],
+				   pacote.source_hardware_address[1],
+				   pacote.source_hardware_address[2],
+				   pacote.source_hardware_address[3],
+				   pacote.source_hardware_address[4],
+				   pacote.source_hardware_address[5]);
+			printf("Endereço logico origem:  %02x:%02x:%02x:%02x:%02x:%02x\n",
+				   pacote.source_protocol_address[0],
+				   pacote.source_protocol_address[1],
+				   pacote.source_protocol_address[2],
+				   pacote.source_protocol_address[3],
+				   pacote.source_protocol_address[4],
+				   pacote.source_protocol_address[5]);
+			printf("Endereço fisico de destino: %02x:%02x:%02x:%02x:%02x:%02x\n",
+				   pacote.target_hardware_address[0],
+				   pacote.target_hardware_address[1],
+				   pacote.target_hardware_address[2],
+				   pacote.target_hardware_address[3],
+				   pacote.target_hardware_address[4],
+				   pacote.target_hardware_address[5]);
+			printf("Endereço logico destino:  %02x:%02x:%02x:%02x:%02x:%02x\n",
+				   pacote.target_protocol_address[0],
+				   pacote.target_protocol_address[1],
+				   pacote.target_protocol_address[2],
+				   pacote.target_protocol_address[3],
+				   pacote.target_protocol_address[4],
+				   pacote.target_protocol_address[5]);
+			//printf("Dado arp: %02x\n", pacote.padding);	   	   	   
+			printf("\n ----------------------------------------- \n");
 			printf("\n");
 		}
 	}
