@@ -107,21 +107,9 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 
-		/* Copia o conteudo do cabecalho Ethernet */
-		memcpy(&pacote.target_ethernet_address, buffer, ETHERNET_ADDR_LEN);
-		memcpy(&pacote.source_ethernet_address, buffer + ETHERNET_ADDR_LEN, ETHERNET_ADDR_LEN);
-		memcpy(&pacote.ethernet_type, buffer + ETHERNET_ADDR_LEN + ETHERNET_ADDR_LEN, sizeof(pacote.ethernet_type));
+		/* Copia o conteudo do Ethernet e protocolo ARP */
+		memcpy(&pacote, buffer, sizeof(buffer));
 		pacote.ethernet_type = ntohs(pacote.ethernet_type);
-		/* Copia o conteudo do protocolo ARP */
-		memcpy(&pacote.hardware_type, buffer + ETHERNET_ADDR_LEN + ETHERNET_ADDR_LEN + sizeof(pacote.ethernet_type), sizeof(pacote.hardware_type));
-		memcpy(&pacote.protocol_type, buffer + ETHERNET_ADDR_LEN + ETHERNET_ADDR_LEN + sizeof(pacote.ethernet_type) + sizeof(pacote.hardware_type), sizeof(pacote.protocol_type));
-		memcpy(&pacote.hardware_address_length, buffer + ETHERNET_ADDR_LEN + ETHERNET_ADDR_LEN + sizeof(pacote.ethernet_type) + sizeof(pacote.hardware_type) + sizeof(pacote.protocol_type), sizeof(pacote.hardware_address_length));
-		memcpy(&pacote.protocol_address_length, buffer + ETHERNET_ADDR_LEN + ETHERNET_ADDR_LEN + sizeof(pacote.ethernet_type) + sizeof(pacote.hardware_type) + sizeof(pacote.protocol_type) + sizeof(pacote.hardware_address_length), sizeof(pacote.protocol_address_length));
-		memcpy(&pacote.arp_options, buffer + ETHERNET_ADDR_LEN + ETHERNET_ADDR_LEN + sizeof(pacote.ethernet_type) + sizeof(pacote.hardware_type) + sizeof(pacote.protocol_type) + sizeof(pacote.hardware_address_length) + sizeof(pacote.protocol_address_length), sizeof(pacote.arp_options));
-		memcpy(&pacote.source_hardware_address, buffer + ETHERNET_ADDR_LEN + ETHERNET_ADDR_LEN + sizeof(pacote.ethernet_type) + sizeof(pacote.hardware_type) + sizeof(pacote.protocol_type) + sizeof(pacote.hardware_address_length) + sizeof(pacote.protocol_address_length) + sizeof(pacote.arp_options), sizeof(pacote.source_hardware_address));
-		memcpy(&pacote.source_protocol_address, buffer + ETHERNET_ADDR_LEN + ETHERNET_ADDR_LEN + sizeof(pacote.ethernet_type) + sizeof(pacote.hardware_type) + sizeof(pacote.protocol_type) + sizeof(pacote.hardware_address_length) + sizeof(pacote.protocol_address_length) + sizeof(pacote.arp_options) + sizeof(pacote.source_hardware_address), sizeof(pacote.source_protocol_address));
-		memcpy(&pacote.target_hardware_address, buffer + ETHERNET_ADDR_LEN + ETHERNET_ADDR_LEN + sizeof(pacote.ethernet_type) + sizeof(pacote.hardware_type) + sizeof(pacote.protocol_type) + sizeof(pacote.hardware_address_length) + sizeof(pacote.protocol_address_length) + sizeof(pacote.arp_options) + sizeof(pacote.source_hardware_address) + sizeof(pacote.source_protocol_address), sizeof(pacote.target_hardware_address));
-		memcpy(&pacote.target_protocol_address, buffer + ETHERNET_ADDR_LEN + ETHERNET_ADDR_LEN + sizeof(pacote.ethernet_type) + sizeof(pacote.hardware_type) + sizeof(pacote.protocol_type) + sizeof(pacote.hardware_address_length) + sizeof(pacote.protocol_address_length) + sizeof(pacote.arp_options) + sizeof(pacote.source_hardware_address) + sizeof(pacote.source_protocol_address) + sizeof(pacote.target_hardware_address), sizeof(pacote.target_protocol_address));
 
 		if (pacote.ethernet_type == ETHERTYPE)
 		{
