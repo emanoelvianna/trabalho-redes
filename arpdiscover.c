@@ -23,14 +23,15 @@
 #define ETH_P_IP 0x0800
 #define ARPOP_REQUEST 1
 
-pthread_t thread[2];
+pthread_t thread_send;
+pthread_t thread_receive;
 char ifname[IFNAMSIZ];
 
 struct estrutura_pacote_arp
 {
 	/* Cabeçalho Ethernet */
-	unsigned char target_ethernet_address[ETHERNET_ADDR_LEN]; // endereco_fisico
-	unsigned char source_ethernet_address[ETHERNET_ADDR_LEN]; // endereco_logico
+	unsigned char target_ethernet_address[ETHERNET_ADDR_LEN]; // endereco_fisico_destino
+	unsigned char source_ethernet_address[ETHERNET_ADDR_LEN]; // endereco_fisico_origem
 	unsigned short ethernet_type;							  // tipo_protocolo_ethernet
 	/* Pacote ARP */
 	unsigned short hardware_type; // tipo_hardware
@@ -134,6 +135,7 @@ void *sendRequests()
 	}
 }
 
+/** recebendo as respostas **/
 void *receiveReplies()
 {
 	int s, n, i;
@@ -142,7 +144,7 @@ void *receiveReplies()
 	unsigned char source_hardware_address[ETHERNET_ADDR_LEN];
 	unsigned char source_protocol_address[IP_ADDR_LEN];
 
-	if ((s = socket(AF_INET, SOCK_PACKET, htons(ETHERTYPE))) < 0)
+	if ((s = socket(AF_PACKET, SOCK_RAW, htons(ETHERTYPE))) < 0)
 	{
 		perror("ERROR ao abrir o socket");
 		return (void *)-1;
@@ -151,13 +153,16 @@ void *receiveReplies()
 	i = 0;
 	do
 	{
+		/* garantindo que não ira existir lixo */
 		memset(&sa, 0x00, sizeof(sa));
 		memset(&pacote, 0x00, sizeof(pacote));
 		n = sizeof(sa);
-		
-		/** recebendo os endereços no buffer **/
-		/* &pacote -> Ponteiro para o buffer que receberah as mensagens. */
-		/* &sa -> Ponteiro refere-se ao endereco de origem da mensagem que sera recebida */
+
+		/** 
+		* Recebendo os endereços no buffer
+		* @param pacote Ponteiro para o buffer que receberah as mensagens.
+ 		* @param sa Ponteiro refere-se ao endereco de origem da mensagem que sera recebida.
+ 		**/
 		if (recvfrom(s, &pacote, sizeof(pacote), 0, (struct sockaddr *)&sa, &n) < 0)
 		{
 			perror("ERROR ao receber o pacote");
@@ -197,16 +202,13 @@ int main(int argc, char *argv[])
 	}
 	strcpy(ifname, argv[1]);
 
-	int err;
-	err = pthread_create(&(thread[0]), NULL, &sendRequests, NULL);
-	if (err != 0)
-		printf("\n Não é possível criar a thread :[%s]", strerror(err));
+	if (pthread_create(&(thread_send), NULL, &sendRequests, NULL) != 0)
+		printf("\n Não é possível criar a thread. \n ");
 	else
 		printf("\n--Eviando o pacote--\n");
 
-	err = pthread_create(&(thread[1]), NULL, &receiveReplies, NULL);
-	if (err != 0)
-		printf("\n Não é possível criar a thread :[%s]", strerror(err));
+	if (pthread_create(&(thread_receive), NULL, &receiveReplies, NULL) != 0)
+		printf("\n Não é possível criar a thread. \n ");
 	else
 		printf("\n--Recebendo os pacotes--\n");
 
