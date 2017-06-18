@@ -14,40 +14,16 @@
 #include <netinet/ether.h>
 #include <arpa/inet.h>
 #include <linux/if_packet.h>
-
-#define ETHERNET_ADDR_LEN 6
-#define IP_ADDR_LEN 4
-#define ARP_PADDING_SIZE 18
-#define ETHERTYPE 0x0806
-#define ARPHRD_ETHER 1
-#define ETH_P_IP 0x0800
-#define ARPOP_REQUEST 1
+#include <pthread.h>
+/* arquivo de interface */
+#include "arp_discover.h"
 
 pthread_t thread_send;
 pthread_t thread_receive;
 char ifname[IFNAMSIZ];
-
-struct estrutura_pacote_arp
-{
-	/* Cabeçalho Ethernet */
-	unsigned char target_ethernet_address[ETHERNET_ADDR_LEN]; // endereco_fisico_destino
-	unsigned char source_ethernet_address[ETHERNET_ADDR_LEN]; // endereco_fisico_origem
-	unsigned short ethernet_type;							  // tipo_protocolo_ethernet
-	/* Pacote ARP */
-	unsigned short hardware_type; // tipo_hardware
-	unsigned short protocol_type; // tipo_protocolo
-
-	unsigned char hardware_address_length; // comprimento_endereco_mac
-	unsigned char protocol_address_length; // comprimento_endereco_logico
-
-	unsigned short arp_options; // tipo_da_operacao
-
-	unsigned char source_hardware_address[ETHERNET_ADDR_LEN]; // endereco_fisico_origem
-	unsigned char source_protocol_address[IP_ADDR_LEN];		  // endereco_logico_origem
-
-	unsigned char target_hardware_address[ETHERNET_ADDR_LEN]; // endereco_fisico_destino
-	unsigned char target_protocol_address[IP_ADDR_LEN];		  // endereco_logico_destino
-};
+struct estrutura_host *hosts;
+int capacidade = 5;
+int posicao = 0;
 
 /** realizando um request na rede **/
 void *sendRequests()
@@ -133,18 +109,22 @@ void *sendRequests()
 
 		close(arp_socket); /** fim da conexão **/
 	}
+
+	pthread_exit(NULL);
 }
 
 /** recebendo as respostas **/
 void *receiveReplies()
 {
-	int s, n, i;
+	int fd, n, i;
 	struct estrutura_pacote_arp pacote;
+	/** Aloca espaço para 5 estruturas **/
+	hosts = (struct estrutura_host *)realloc(hosts, sizeof(struct estrutura_host) * capacidade);
 	struct sockaddr sa;
 	unsigned char source_hardware_address[ETHERNET_ADDR_LEN];
 	unsigned char source_protocol_address[IP_ADDR_LEN];
 
-	if ((s = socket(AF_PACKET, SOCK_RAW, htons(ETHERTYPE))) < 0)
+	if ((fd = socket(AF_PACKET, SOCK_RAW, htons(ETHERTYPE))) < 0)
 	{
 		perror("ERROR ao abrir o socket");
 		return (void *)-1;
@@ -160,10 +140,11 @@ void *receiveReplies()
 
 		/** 
 		* Recebendo os endereços no buffer
-		* @param pacote Ponteiro para o buffer que receberah as mensagens.
- 		* @param sa Ponteiro refere-se ao endereco de origem da mensagem que sera recebida.
+		* @param &pacote Ponteiro para o buffer que recebe as mensagens.
+		* @param sizeof(pacote) tamanho do buffer.
+ 		* @param &sa Ponteiro refere-se ao endereco de origem da mensagem que sera recebida.
  		**/
-		if (recvfrom(s, &pacote, sizeof(pacote), 0, (struct sockaddr *)&sa, &n) < 0)
+		if (recvfrom(fd, &pacote, sizeof(pacote), 0, (struct sockaddr *)&sa, &n) < 0)
 		{
 			perror("ERROR ao receber o pacote");
 			return (void *)-1;
@@ -188,9 +169,28 @@ void *receiveReplies()
 				   source_protocol_address[1],
 				   source_protocol_address[2],
 				   source_protocol_address[3]);
+
+			/* preenchendo o array com as informações de MAC e IP */
+			memcpy(hosts[posicao].hardware_address, source_hardware_address, ETHERNET_ADDR_LEN);
+			memcpy(hosts[posicao].protocol_address, source_protocol_address, IP_ADDR_LEN);
+			posicao++;
+			if (posicao >= capacidade)
+			{
+				capacidade *= 1;
+				hosts = (estrutura_host *)malloc(sizeof(estrutura_host) * capacidade);
+			}
 		}
 
 	} while (1);
+
+	close(fd);
+	pthread_exit(NULL);
+}
+
+/* retorna os hosts descobertos */
+struct estrutura_host *getHosts()
+{
+	return hosts;
 }
 
 int main(int argc, char *argv[])
@@ -212,5 +212,7 @@ int main(int argc, char *argv[])
 	else
 		printf("\n--Recebendo os pacotes--\n");
 
-	sleep(30);
+	sleep(10);
+
+	free(hosts);
 }
