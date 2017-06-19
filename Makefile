@@ -1,6 +1,11 @@
-all:
-	gcc -o arp_sniffer arp_sniffer.c -Wall
-	gcc -o arp_discover arp_discover.c -Wall -lm -lpthread
-	gcc -o arp_poisoning arp_poisoning.c -Wall
+CFLAGS = -lpthread -Wall
+LIBS=
+
+SRC=$(wildcard *.c)
+
+arp_util: $(SRC)
+	gcc -o $@ $^ $(CFLAGS) $(LIBS)
+	
 clean:
-	rm -f arp_sniffer arp_discover arp_poisoning
+	rm -f *.o
+	rm -f arp_util

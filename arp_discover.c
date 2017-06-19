@@ -16,6 +16,7 @@
 #include <linux/if_packet.h>
 #include <pthread.h>
 /* arquivo de interface */
+#include "generico.h"
 #include "arp_discover.h"
 
 pthread_t thread_send;
@@ -193,14 +194,9 @@ struct estrutura_host *getHosts()
 	return hosts;
 }
 
-int main(int argc, char *argv[])
+int arp_discover(char *input_ifname)
 {
-	if (argc != 2)
-	{
-		printf("Informe a interface de rede: %s iface\n", argv[0]);
-		return 1;
-	}
-	strcpy(ifname, argv[1]);
+	strcpy(ifname, input_ifname);
 
 	if (pthread_create(&(thread_send), NULL, &sendRequests, NULL) != 0)
 		printf("\n Não é possível criar a thread. \n ");
@@ -215,4 +211,6 @@ int main(int argc, char *argv[])
 	sleep(10);
 
 	free(hosts);
+
+	return 0;
 }

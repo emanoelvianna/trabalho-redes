@@ -14,54 +14,18 @@
 #include <netinet/ether.h>
 #include <arpa/inet.h>
 #include <linux/if_packet.h>
+/* arquivo de interface */
+#include "generico.h"
+#include "arp_sniffer.h"
 
-#define BUFFER_SIZE 1600 /** tamanho do buffer de leitura do pacote arp **/
-#define ETHERTYPE 0x0806 /** indicando que é do tipo arp **/
-
-/** Estrutura de dados de um pacote Ethernet encapsulando um pacote ARP **/
-#define ETHERNET_ADDR_LEN 6
-#define IP_ADDR_LEN 4
-#define ARP_PADDING_SIZE 18
-
-struct estrutura_pacote_arp
-{
-
-	/* Cabeçalho Ethernet */
-	unsigned char source_ethernet_address[ETHERNET_ADDR_LEN]; // endereco_fisico
-	unsigned char target_ethernet_address[ETHERNET_ADDR_LEN]; // endereco_logico
-	unsigned short ethernet_type;							  // tipo_protocolo_ethernet
-
-	/* Cabeçalho ARP */
-	unsigned short int hardware_type; // tipo_hardware
-	unsigned short int protocol_type; // tipo_protocolo
-
-	unsigned char hardware_address_length; // comprimento_endereco_mac
-	unsigned char protocol_address_length; // comprimento_endereco_logico
-
-	unsigned short int arp_options; // tipo_da_operacao
-
-	unsigned char source_hardware_address[ETHERNET_ADDR_LEN]; // endereco_fisico_origem
-	unsigned char source_protocol_address[IP_ADDR_LEN];		  // endereco_logico_origem
-
-	unsigned char target_hardware_address[ETHERNET_ADDR_LEN]; // endereco_fisico_destino
-	unsigned char target_protocol_address[IP_ADDR_LEN];		  // endereco_logico_destino
-
-	unsigned char padding[ARP_PADDING_SIZE]; // dados_de_preenchimento
-};
-
-int main(int argc, char *argv[])
+int arp_sniffer(char *input_ifname)
 {
 	int fd;
 	unsigned char buffer[BUFFER_SIZE];
 	struct ifreq ifr;
 	char ifname[IFNAMSIZ];
 
-	if (argc != 2)
-	{
-		printf("Informe a interface de rede: %s iface\n", argv[0]);
-		return 1;
-	}
-	strcpy(ifname, argv[1]);
+	strcpy(ifname, input_ifname);
 
 	/* Cria um descritor de socket do tipo RAW */
 	fd = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
